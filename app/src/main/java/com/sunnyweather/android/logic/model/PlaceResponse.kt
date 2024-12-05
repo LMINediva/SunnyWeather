@@ -16,6 +16,6 @@ data class Place(
 )
 
 /**
- * 城市地理位置，lng：经度，lat：维度
+ * 城市地理位置，lng：经度，lat：纬度
  */
 data class Location(val lng: String, val lat: String)
