@@ -1,5 +1,6 @@
 package com.sunnyweather.android.ui.place
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.sunnyweather.android.R
 import com.sunnyweather.android.logic.model.Place
+import com.sunnyweather.android.ui.weather.WeatherActivity
 
 /**
  * 城市搜索结果界面的RecyclerView适配器
@@ -25,7 +27,21 @@ class PlaceAdapter(private val fragment: Fragment, private val placeList: List<P
             R.layout.place_item,
             parent, false
         )
-        return ViewHolder(view)
+        val holder = ViewHolder(view)
+        holder.itemView.setOnClickListener {
+            val position = holder.adapterPosition
+            val place = placeList[position]
+            val intent = Intent(parent.context, WeatherActivity::class.java).apply {
+                // 经度
+                putExtra("location_lng", place.location.lng)
+                // 纬度
+                putExtra("location_lat", place.location.lat)
+                // 城市名
+                putExtra("place_name", place.name)
+            }
+            fragment.startActivity(intent)
+        }
+        return holder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

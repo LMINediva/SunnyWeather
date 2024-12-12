@@ -2,15 +2,21 @@ package com.sunnyweather.android.ui.weather
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.sunnyweather.android.R
 import com.sunnyweather.android.logic.model.Weather
 import com.sunnyweather.android.logic.model.getSky
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * 城市天气信息展示界面
@@ -24,6 +30,11 @@ class WeatherActivity : AppCompatActivity() {
     private lateinit var currentAQI: TextView
     private lateinit var nowLayout: RelativeLayout
     private lateinit var forecastLayout: LinearLayout
+    private lateinit var coldRiskText: TextView
+    private lateinit var dressingText: TextView
+    private lateinit var ultravioletText: TextView
+    private lateinit var carWashingText: TextView
+    private lateinit var weatherLayout: ScrollView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +44,12 @@ class WeatherActivity : AppCompatActivity() {
         currentSky = findViewById(R.id.currentSky)
         currentAQI = findViewById(R.id.currentAQI)
         nowLayout = findViewById(R.id.nowLayout)
+        forecastLayout = findViewById(R.id.forecastLayout)
+        coldRiskText = findViewById(R.id.coldRiskText)
+        dressingText = findViewById(R.id.dressingText)
+        ultravioletText = findViewById(R.id.ultravioletText)
+        carWashingText = findViewById(R.id.carWashingText)
+        weatherLayout = findViewById(R.id.weatherLayout)
         // 获取经度
         if (viewModel.locationLng.isEmpty()) {
             viewModel.locationLng = intent.getStringExtra("location_lng") ?: ""
@@ -45,6 +62,16 @@ class WeatherActivity : AppCompatActivity() {
         if (viewModel.placeName.isEmpty()) {
             viewModel.placeName = intent.getStringExtra("place_name") ?: ""
         }
+        viewModel.weatherLiveData.observe(this, Observer { result ->
+            val weather = result.getOrNull()
+            if (weather != null) {
+                showWeatherInfo(weather)
+            } else {
+                Toast.makeText(this, "无法成功获取天气信息", Toast.LENGTH_SHORT).show()
+                result.exceptionOrNull()?.printStackTrace()
+            }
+        })
+        viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
     }
 
     private fun showWeatherInfo(weather: Weather) {
@@ -82,7 +109,29 @@ class WeatherActivity : AppCompatActivity() {
             val skyIcon = view.findViewById(R.id.skyIcon) as ImageView
             // 天气的情况
             val skyInfo = view.findViewById(R.id.skyInfo) as TextView
+            // 当天的最低和最高温度
+            val temperatureInfo = view.findViewById(R.id.temperatureInfo) as TextView
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            dateInfo.text = simpleDateFormat.format(skycon.date)
+            val sky = getSky(skycon.value)
+            skyIcon.setImageResource(sky.icon)
+            skyInfo.text = sky.info
+            val tempText = "${temperature.min.toInt()} - ${temperature.max.toInt()} ℃"
+            temperatureInfo.text = tempText
+            forecastLayout.addView(view)
         }
+        // 填充life_index.xml布局中的数据
+        // 生活指数
+        val lifeIndex = daily.lifeIndex
+        // 感冒指数
+        coldRiskText.text = lifeIndex.coldRisk[0].desc
+        // 穿衣指数
+        dressingText.text = lifeIndex.dressing[0].desc
+        // 紫外线指数
+        ultravioletText.text = lifeIndex.ultraviolet[0].desc
+        // 洗车指数
+        carWashingText.text = lifeIndex.carWashing[0].desc
+        weatherLayout.visibility = View.VISIBLE
     }
 
 }
