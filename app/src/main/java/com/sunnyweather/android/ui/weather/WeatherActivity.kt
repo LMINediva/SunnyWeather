@@ -1,5 +1,6 @@
 package com.sunnyweather.android.ui.weather
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,6 +39,13 @@ class WeatherActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 将背景图和状态栏融合到一起
+        val decorView = window.decorView
+        // 将Activity的布局显示在状态栏上
+        decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        // 将状态栏设置成透明色
+        window.statusBarColor = Color.TRANSPARENT
         setContentView(R.layout.activity_weather)
         placeName = findViewById(R.id.placeName)
         currentTemp = findViewById(R.id.currentTemp)

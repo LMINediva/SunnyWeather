@@ -1,6 +1,8 @@
 package com.sunnyweather.android.logic
 
 import androidx.lifecycle.liveData
+import com.sunnyweather.android.logic.dao.PlaceDao
+import com.sunnyweather.android.logic.model.Place
 import com.sunnyweather.android.logic.model.Weather
 import com.sunnyweather.android.logic.network.SunnyWeatherNetwork
 import kotlinx.coroutines.Dispatchers
@@ -67,5 +69,14 @@ object Repository {
             }
             emit(result)
         }
+
+    // 保存选中的城市名
+    fun savePlace(place: Place) = PlaceDao.savePlace(place)
+
+    // 获取已经保存的选中城市名
+    fun getSavedPlace() = PlaceDao.getSavedPlace()
+
+    // 判断选择的城市名是否保存
+    fun isPlaceSaved() = PlaceDao.isPlaceSaved()
 
 }
