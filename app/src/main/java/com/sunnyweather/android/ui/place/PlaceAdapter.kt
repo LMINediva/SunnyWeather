@@ -14,7 +14,7 @@ import com.sunnyweather.android.ui.weather.WeatherActivity
 /**
  * 城市搜索结果界面的RecyclerView适配器
  */
-class PlaceAdapter(private val fragment: Fragment, private val placeList: List<Place>) :
+class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: List<Place>) :
     RecyclerView.Adapter<PlaceAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -39,7 +39,9 @@ class PlaceAdapter(private val fragment: Fragment, private val placeList: List<P
                 // 城市名
                 putExtra("place_name", place.name)
             }
+            fragment.viewModel.savePlace(place)
             fragment.startActivity(intent)
+            fragment.activity?.finish()
         }
         return holder
     }
