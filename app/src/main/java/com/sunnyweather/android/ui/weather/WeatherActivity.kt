@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.sunnyweather.android.R
 import com.sunnyweather.android.logic.model.Weather
 import com.sunnyweather.android.logic.model.getSky
@@ -36,6 +37,7 @@ class WeatherActivity : AppCompatActivity() {
     private lateinit var ultravioletText: TextView
     private lateinit var carWashingText: TextView
     private lateinit var weatherLayout: ScrollView
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +60,7 @@ class WeatherActivity : AppCompatActivity() {
         ultravioletText = findViewById(R.id.ultravioletText)
         carWashingText = findViewById(R.id.carWashingText)
         weatherLayout = findViewById(R.id.weatherLayout)
+        swipeRefresh = findViewById(R.id.swipeRefresh)
         // 获取经度
         if (viewModel.locationLng.isEmpty()) {
             viewModel.locationLng = intent.getStringExtra("location_lng") ?: ""
@@ -78,10 +81,16 @@ class WeatherActivity : AppCompatActivity() {
                 Toast.makeText(this, "无法成功获取天气信息", Toast.LENGTH_SHORT).show()
                 result.exceptionOrNull()?.printStackTrace()
             }
+            swipeRefresh.isRefreshing = false
         })
-        viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
+        refreshWeather()
+        swipeRefresh.setOnRefreshListener {
+            refreshWeather()
+        }
     }
 
+    // 显示天气信息
     private fun showWeatherInfo(weather: Weather) {
         // 城市名
         placeName.text = viewModel.placeName
@@ -140,6 +149,12 @@ class WeatherActivity : AppCompatActivity() {
         // 洗车指数
         carWashingText.text = lifeIndex.carWashing[0].desc
         weatherLayout.visibility = View.VISIBLE
+    }
+
+    // 刷新天气信息
+    fun refreshWeather() {
+        viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
+        swipeRefresh.isRefreshing = true
     }
 
 }
