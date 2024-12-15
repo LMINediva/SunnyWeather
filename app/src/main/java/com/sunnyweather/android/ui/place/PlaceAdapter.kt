@@ -31,17 +31,30 @@ class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: L
         holder.itemView.setOnClickListener {
             val position = holder.adapterPosition
             val place = placeList[position]
-            val intent = Intent(parent.context, WeatherActivity::class.java).apply {
+            // 根据PlaceFragment所处的Activity来进行不同的逻辑处理
+            val activity = fragment.activity
+            if (activity is WeatherActivity) {
+                activity.drawerLayout.closeDrawers()
                 // 经度
-                putExtra("location_lng", place.location.lng)
+                activity.viewModel.locationLng = place.location.lng
                 // 纬度
-                putExtra("location_lat", place.location.lat)
+                activity.viewModel.locationLat = place.location.lat
                 // 城市名
-                putExtra("place_name", place.name)
+                activity.viewModel.placeName = place.name
+                activity.refreshWeather()
+            } else {
+                val intent = Intent(parent.context, WeatherActivity::class.java).apply {
+                    // 经度
+                    putExtra("location_lng", place.location.lng)
+                    // 纬度
+                    putExtra("location_lat", place.location.lat)
+                    // 城市名
+                    putExtra("place_name", place.name)
+                }
+                fragment.startActivity(intent)
+                fragment.activity?.finish()
             }
             fragment.viewModel.savePlace(place)
-            fragment.startActivity(intent)
-            fragment.activity?.finish()
         }
         return holder
     }
