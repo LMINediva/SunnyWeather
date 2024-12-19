@@ -9,9 +9,9 @@
 
 ## 屏幕截图
 
-<img src="screenshots/operation1.gif" alt="下拉刷新" width="40%" height="40%" />
+<img src="screenshots/operation1.gif" alt="下拉刷新" width="40%" height="40%" /> 
 
-<img src="screenshots/operation2.gif" alt="地理位置选择" width="40%" height="40%" />
+<img src="screenshots/operation2.gif" alt="地理位置选择" width="40%" height="40%" /> 
 
 ## 许可
 
