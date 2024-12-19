@@ -1,6 +1,7 @@
-#  晴川天气（SunnyWeather）
+# 晴川天气（SunnyWeather）
 
 ## 简介：
+
 **晴川天气**是一款基于MVVM框架的Android天气预报软件，具备查询全球各省市县天气、自由切换城市、手动更新天气等功能。
 **晴川天气**中的天气数据由[**彩云天气**](https://caiyunai.com/api/weather_api.html)提供，
 背景图片由**<<第一行代码Android（第3版）>>**提供，
@@ -8,9 +9,9 @@
 
 ## 屏幕截图
 
-![下拉刷新](screenshots/operation1.gif "下拉刷新")
+<img src="screenshots/operation1.gif" alt="下拉刷新" width="40%" height="40%" />
 
-![地理位置选择](screenshots/operation2.gif "地理位置选择")
+<img src="screenshots/operation2.gif" alt="地理位置选择" width="40%" height="40%" />
 
 ## 许可
 
